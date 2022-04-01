@@ -8,7 +8,7 @@ const getUsers = async (req, res) => {
     res.send(users);
   } catch (err) {
     console.log(err);
-    res.status(500).send('Backend server error');
+    res.status(500).json({ message: 'Backend server error' });
   }
 };
 
@@ -18,12 +18,12 @@ const getUserById = async (req, res) => {
     const user = users.find((data) => data._id === req.params._id);
 
     if (!user) {
-      res.status(404).send('User not found');
+      res.status(404).json({ message: 'Backend server error' });
     }
     res.send(user);
   } catch (err) {
     console.log(err);
-    res.status(500).send('Backend server error');
+    res.status(500).json({ message: 'Backend server error' });
   }
 };
 

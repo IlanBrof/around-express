@@ -8,7 +8,7 @@ const getCards = async (req, res) => {
     res.send(cards);
   } catch (err) {
     console.log(err);
-    res.status(500).send('Backend server error');
+    res.status(500).json({ message: 'Backend server error' });
   }
 };
 
