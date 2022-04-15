@@ -1,4 +1,4 @@
-const Card = require("../models/card");
+const Card = require('../models/card');
 
 const getCards = async (req, res) => {
   try {
@@ -6,7 +6,7 @@ const getCards = async (req, res) => {
     res.send(cards);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -14,14 +14,14 @@ const getCardById = async (req, res) => {
   try {
     const card = await Card.findById(req.params.cardId);
     if (!card) {
-      return res.status(404).send("Cannot find card by this ID");
+      return res.status(404).send('Cannot find card by this ID');
     }
     res.status(200).send(card);
   } catch (err) {
-    if (err.name === "CastError") {
-      return res.status(400).json({ message: "400 Bad request" });
+    if (err.name === 'CastError') {
+      return res.status(400).json({ message: '400 Bad request' });
     }
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -35,14 +35,14 @@ const createCard = async (req, res) => {
       owner: userId,
     });
     if (!newCard) {
-      res.json("Error while creating card");
+      res.json('Error while creating card');
     }
     res.status(200).send(newCard);
   } catch (err) {
-    if ((err.name = "ValidationError")) {
-      return res.status(400).send("400 Bad Request");
+    if (err.name = 'ValidationError') { // eslint-disable-line
+      return res.status(400).send('400 Bad Request');
     }
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -51,17 +51,17 @@ const likeCard = async (req, res) => {
     const like = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
-      { new: true }
+      { new: true },
     );
     if (!like) {
-      return res.status(404).send("Cannot find card to set like");
+      return res.status(404).send('Cannot find card to set like');
     }
     res.status(200).send(like);
   } catch (err) {
-    if (err.name === "CastError") {
-      return res.status(400).json({ message: "Wrong cardID syntax" });
+    if (err.name === 'CastError') {
+      return res.status(400).json({ message: 'Wrong cardID syntax' });
     }
-    res.status(500).json({ message: "Backend server error" });
+    res.status(500).json({ message: 'Backend server error' });
   }
 };
 
@@ -70,17 +70,17 @@ const dislikeCard = async (req, res) => {
     const dislike = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } }, // add _id to the array if it's not there yet
-      { new: true }
+      { new: true },
     );
     if (!dislike) {
-      return res.status(404).send("Cannot find card to set dislike");
+      return res.status(404).send('Cannot find card to set dislike');
     }
     res.status(200).send(dislike);
   } catch (err) {
-    if (err.name === "CastError") {
-      return res.status(404).json({ message: "Wrong cardID syntax" });
+    if (err.name === 'CastError') {
+      return res.status(404).json({ message: 'Wrong cardID syntax' });
     }
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -92,10 +92,10 @@ const deleteCard = async (req, res) => {
     }
     res.status(200).json(`Card ${card.name} deleted successfully`);
   } catch (err) {
-    if (err.name === "CastError") {
-      return res.status(404).json({ message: "Wrong cardID syntax" });
+    if (err.name === 'CastError') {
+      return res.status(404).json({ message: 'Wrong cardID syntax' });
     }
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
