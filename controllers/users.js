@@ -5,7 +5,6 @@ const getUsers = async (req, res) => {
     const users = await User.find({});
     res.send(users);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: 'Backend server error' });
   }
 };
@@ -21,7 +20,6 @@ const getUserById = async (req, res) => {
     if (err.name === 'CastError') {
       return res.status(400).json({ message: 'Wrong ID Syntax' });
     }
-    console.log(err);
     return res.status(500).json({ message: 'Backend server error' });
   }
 };

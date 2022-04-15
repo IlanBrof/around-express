@@ -5,7 +5,6 @@ const getCards = async (req, res) => {
     const cards = await Card.find({});
     res.send(cards);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
