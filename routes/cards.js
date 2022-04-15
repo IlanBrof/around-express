@@ -6,13 +6,13 @@ const {
 } = require('../controllers/cards');
 
 router.get('/', getCards);
-router.get('/:_id', getCardById);
+router.get('/:cardId', getCardById);
 
 router.post('/', createCard);
 
-router.put('/:_id/likes', likeCard);
+router.put('/:cardId/likes', likeCard);
 
-router.delete('/:_id/likes', dislikeCard);
-router.delete('/:_id', deleteCard);
+router.delete('/:cardId/likes', dislikeCard);
+router.delete('/:cardId', deleteCard);
 
 module.exports = router;

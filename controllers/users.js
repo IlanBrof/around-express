@@ -12,15 +12,19 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findOne({ id: req.params._id });
-
-    if (!user) {
-      res.status(404).json({ message: 'Backend server error' });
+    const user = await User.findById(req.params.userId);
+    if (user === null) {
+      res.status(404).json({ message: 'user not found' });
     }
-    res.send(user);
+    res.status(200).send(user);
   } catch (err) {
+    if (err.name === 'CastError') {
+      return res.status(400).json({ message: 'Wrong ID Syntax' });
+
+    }
     console.log(err);
-    res.status(500).json({ message: 'Backend server error' });
+    return res.status(500).json({ message: 'Backend server error' });
+
   }
 };
 
@@ -28,58 +32,61 @@ const createUser = async (req, res) => {
   const { name, about, avatar } = req.body;
   try {
     const newUser = await User.create({ name, about, avatar });
-    if (newUser) {
       res.status(200).send(newUser);
-    } else {
-      console.log('Error in createUser');
-      res.status(500).json({ message: 'Backend server error' });
-    }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).json('Create user validation error');
+      return res.status(400).json('Create user validation error');
     }
+    return res.status(500).json({ message: 'Backend server error' });
   }
 };
 
 const patchUserAvatar = async (req, res) => {
+  const { avatar } = req.body;
   try {
-    const updateData = await User.findOneAndUpdate(req.user._id, req.body);
-    if (updateData && req.body.avatar) {
+    const updateData = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true });
+    if (updateData && avatar) {
       res.status(200).send('User avatar patched successfully');
-    } else {
-      console.log('Error in patchUserAvatar');
-      res.send('Backend server error');
     }
+    res.status(404).json({ message: 'User not found' });
   } catch (err) {
-    res.status(500).json({ message: 'Backend server error' });
+    if (err.name === "ValidationError") {
+      return res.status(400).json({ message: 'Wrong ID Syntax' });
+    } else if (err.name === "CastError") {
+      return res.status(500).json({ message: 'Backend server error' });
+    }
   }
 };
 
 const patchUserData = async (req, res) => {
   try {
-    const updateData = await User.findOneAndUpdate(req.user._id, req.body);
+    const updateData = await User.findByIdAndUpdate(req.user.userId, req.body, { new: true, runValidators: true });
     if (updateData && (req.body.name || req.body.about)) {
       res.status(200).send('User data patched successfully');
-    } else {
-      console.log('Error in patchUserData');
-      res.send('Backend server error');
     }
+    res.status(404).json({ message: 'User not found' });
   } catch (err) {
-    res.status(500).json({ message: 'Backend server error' });
+    if (err.name === "ValidationError") {
+      return res.status(400).json({ message: 'Wrong ID Syntax' });
+    } else if (err.name === "CastError") {
+      return res.status(500).json({ message: 'Backend server error' });
+    }
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
-    const deleteData = await User.findOneAndDelete(req.user._id);
-    if (deleteData) {
-      res.status(200).send(`User ${deleteData} deleted successfully`);
-    } else {
-      console.log('Error in deleteUser');
-      res.send('Backend server error');
+    const deleteData = await User.findByIdAndDelete(req.params.userId);
+    if (!deleteData) {
+      res.status(404).json({ message: 'User not found' });
     }
+      res.status(200).send(`User ${deleteData.name} deleted successfully`);
+
   } catch (err) {
-    res.status(500).json({ message: 'Backend server error' });
+    if (err.name === "CastError") {
+      return res.status(400).json({ message: 'Wrong ID Syntax' });
+    }
+    return res.status(500).json({ message: 'Backend server error' });
   }
 };
 

@@ -12,19 +12,22 @@ mongoose.connect('mongodb://localhost:27017/aroundb');
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Welcome to Around-Express Server!');
 });
 
 app.use((req, res, next) => {
   req.user = {
     _id: '6256ab8d8d8c05758da97d8c',
   };
-
   next();
 });
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use((req, res) => {
+  res.status(404).json({ message: '404 NOT FOUND' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);
